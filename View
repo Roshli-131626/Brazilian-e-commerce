@@ -1,0 +1,86 @@
+#This query retrieves specific columns from two tables, 
+#customer_orders (aliased as c) and order_details (aliased as o), and joins them based on the order_id column. 
+#Here's an explanation of the selected columns and the join operation
+SELECT c.customer_id,
+    c.customer_unique_id,
+    c.customer_zip_code_prefix,
+    c.customer_city,
+    c.customer_state,
+    c.order_id,
+    c.order_status,
+    c.order_purchase_timestamp,
+    c.order_approved_at,
+    c.order_delivered_carrier_date,
+    c.order_delivered_customer_date,
+    c.order_estimated_delivery_date,
+    o.payment_type,
+    o.payment_installments,
+    o.payment_valued
+   FROM customer_orders c
+     JOIN order_details o ON o.order_id = c.order_id;
+
+#This query selects distinct rows from the customer_order_details table based on all columns. 
+#It retrieves unique combinations of values across all columns, ensuring that each row in the result set is unique.
+ SELECT DISTINCT customer_order_details.customer_id,
+    customer_order_details.customer_unique_id,
+    customer_order_details.customer_zip_code_prefix,
+    customer_order_details.customer_city,
+    customer_order_details.customer_state,
+    customer_order_details.order_id,
+    customer_order_details.order_status,
+    customer_order_details.order_purchase_timestamp,
+    customer_order_details.order_approved_at,
+    customer_order_details.order_delivered_carrier_date,
+    customer_order_details.order_delivered_customer_date,
+    customer_order_details.order_estimated_delivery_date,
+    customer_order_details.payment_type,
+    customer_order_details.payment_installments,
+    customer_order_details.payment_valued
+   FROM customer_order_details;
+
+#This SQL query selects specific columns from two tables, orders (aliased as o) and customers_details (aliased as c), and joins them based on the customer_id column
+ SELECT c.customer_id,
+    c.customer_unique_id,
+    c.customer_zip_code_prefix,
+    c.customer_city,
+    c.customer_state,
+    o.order_id,
+    o.order_status,
+    o.order_purchase_timestamp,
+    o.order_approved_at,
+    o.order_delivered_carrier_date,
+    o.order_delivered_customer_date,
+    o.order_estimated_delivery_date
+   FROM orders o
+     JOIN customers_details c ON c.customer_id = o.customer_id;
+
+#This SQL query selects specific columns from two tables, order_items (aliased as o) and products (aliased as p), and joins them based on the product_id column.
+ SELECT p.product_category_name,
+    o.order_id,
+    o.seller_id,
+    o.shipping_limit_date,
+    o.price,
+    o.freight_value
+   FROM order_items o
+     JOIN products p ON o.product_id = p.product_id;
+
+#This SQL query selects distinct rows from the product_order table based on all columns. It retrieves unique combinations of values across all columns, ensuring that each row in the result set is unique.
+ SELECT DISTINCT product_order.product_category_name,
+    product_order.order_id,
+    product_order.seller_id,
+    product_order.shipping_limit_date,
+    product_order.price,
+    product_order.freight_value
+   FROM product_order;
+
+#This SQL query selects specific columns from two tables, product_order_dist (aliased as p) and seller (aliased as s), and joins them based on the seller_id column
+ SELECT p.product_category_name,
+    p.order_id,
+    p.seller_id,
+    p.shipping_limit_date,
+    p.price,
+    p.freight_value,
+    s.seller_zip_code_prefix,
+    s.seller_state
+   FROM product_order_dist p
+     JOIN seller s ON p.seller_id = s.seller_id;
