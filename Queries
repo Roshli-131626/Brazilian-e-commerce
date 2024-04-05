@@ -84,3 +84,82 @@ SELECT c.customer_id,
     s.seller_state
    FROM product_order_dist p
      JOIN seller s ON p.seller_id = s.seller_id;
+
+#To Find the order placed by product category-wise
+select product_category_name,
+count(distinct order_id) as orders_placed
+from product_order_seller
+group by 1
+order by 2 desc
+limit 10
+
+#Which payment type was used by most of the users and what is the total amount spent in each payment type?
+select payment_type,
+count(distinct customer_id),
+round(sum(payment_valued)::numeric,2) as amount_paid
+from customer_order_details_dist
+group by 1
+order by 2 desc
+
+#What are weightage of order status?
+select order_status,
+count(distinct customer_id) as customer_count
+from customer_order_details_dist
+group by 1
+order by 2 desc
+
+#Check which product was canceled many times and from which seller.
+select p.product_category_name,
+p.seller_id,
+count(distinct c.customer_id) as order_count
+from product_order_seller p
+join customer_order_details c 
+on c.order_id = p.order_id
+where c.order_status = 'canceled'
+and product_category_name != 'null'
+group by p.product_category_name,p.seller_id
+order by order_count desc
+
+#What is the date range of orders made by customers?
+select min(order_purchase_timestamp),
+max(order_purchase_timestamp)
+from customer_order_details_dist
+
+#Check which product was canceled many times and from which seller.
+select p.product_category_name,
+p.seller_id,
+count(distinct c.customer_id) as order_count
+from product_order_seller p
+join customer_order_details c 
+on c.order_id = p.order_id
+where c.order_status = 'canceled'
+and product_category_name != 'null'
+group by p.product_category_name,p.seller_id
+order by order_count desc
+
+#Which ten products is being canceled often?
+select p.product_category_name,
+count(distinct c.customer_id) as order_count
+from product_order_seller p
+join customer_order_details c 
+on c.order_id = p.order_id
+where c.order_status = 'canceled'
+and product_category_name != 'null'
+group by 1
+order by 2 desc
+
+#Creating stored procedure
+CREATE OR REPLACE FUNCTION customer()
+RETURNS INTEGER AS $$
+DECLARE
+    total INTEGER := 0;
+BEGIN
+    SELECT COUNT(customer_id)
+    INTO total
+    FROM customer_order_details;
+    
+    RETURN total;
+END;
+$$ LANGUAGE plpgsql;
+
+select customer()
